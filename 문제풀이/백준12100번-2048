@@ -1,0 +1,48 @@
+N = int(input())
+Board = [list(map(int,input().split())) for i in range(N)]
+
+# 90도 시계방향 회전
+def rotate90(Board,N):
+    new_board = [[0]*N for _ in range(N)]
+    for i in range(N):
+        for j in range(N):
+            new_board[j][N-1-i] = Board[i][j]
+    return new_board
+
+# 왼쪽 으로 밀기
+def convert(lst, N):
+    new_list = [i for i in lst if i != 0] # 0 제거 (빈칸 무시), list(filter(lambda x: x != 0, lst))
+    for i in range(1, len(new_list)):
+        if new_list[i] == new_list[i-1]: # 같은 숫자가 붙어있으면
+            new_list[i-1] *= 2 # 앞에 합치기
+            new_list[i] = 0 # 뒷칸 비우기
+    new_list = [i for i in new_list if i != 0] # 합쳐진 뒤 0 다시 제거
+    new_list += [0] * (N - len(new_list)) # 뒤에 빈칸 채우기
+    return new_list
+    
+    
+# 남은 이동 횟수 동안 가능한 모든 움직임을 시뮬레이션하고, 최대 블록 값을 찾는 함수
+def dfs(N, Board, count):
+    ret = max([max(i) for i in Board]) # 현재 보드에서 가장 큰 값
+    if count == 0: # 탐색 횟수 다 쓰면 종료
+        return ret
+    for _ in range(4): # 4방향 탐색
+        X = [convert(i,N) for i in Board] # 한 줄씩 왼쪽으로 이동
+        if X!= Board: # 변화가 있으면
+            ret = max(ret, dfs(N, X, count-1)) # 재귀 탐색
+        Board = rotate90(Board,N) # 보드 90도 돌려서 다음 방향 확인
+            
+    return ret
+
+print(dfs(N, Board, 5))
+
+
+
+# input
+# 3
+# 2 2 2
+# 4 4 4
+# 8 8 8
+
+# output
+# 16

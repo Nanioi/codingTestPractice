@@ -1,0 +1,28 @@
+import sys
+input = sys.stdin.readline
+
+K, N = map(int, input().split())
+lines = [int(input()) for _ in range(K)]
+
+start, end = 1, max(lines)
+result = 0
+
+while start <= end:
+    mid = (start + end) // 2
+    count = sum(line // mid for line in lines)
+
+    if count >= N:  # 만들 수 있는 개수가 충분하면
+        result = mid        # 길이를 저장하고
+        start = mid + 1     # 더 긴 길이로 시도
+    else:
+        end = mid - 1       # 너무 길게 잘랐으니 줄이기
+
+print(result)
+
+# 4 11
+; 802
+; 743
+; 457
+; 539
+
+# 200
