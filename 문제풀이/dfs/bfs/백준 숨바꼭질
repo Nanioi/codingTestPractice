@@ -1,0 +1,30 @@
+from collections import deque
+
+N, K = map(int, input().split())
+
+
+def bfs(start):
+    visited = [False] * 100001
+    queue = deque()
+    queue.append((start, 0))
+    visited[start] = True
+    
+    while queue:
+        cur, time = queue.popleft()
+        if cur == K:
+            return time
+        for next in (cur-1,cur+1,cur*2):
+            if 0<= next <= 100000 and not visited[next]:
+                visited[next] = True
+                queue.append((next,time+1))
+        
+    
+
+print(bfs(N))
+
+
+#입력
+#5 17
+
+#출력
+#4

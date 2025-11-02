@@ -1,0 +1,82 @@
+#1. bfs 풀이 
+from collections import deque
+
+n = int(input())
+array = [list(map(int,input().split())) for _ in range(n)]
+
+# 이동 방향 (상하좌우)
+dx = [1, -1, 0, 0]
+dy = [0, 0, 1, -1]
+
+max_height = max(map(max,array))
+answer = 0
+
+def bfs(x,y,h,visited):
+    queue = deque([(x,y)])
+    visited[x][y] = True
+    while queue:
+        x,y = queue.popleft()
+        for i in range(4):
+            xx,yy = x+dx[i], y+dy[i]
+            if 0<=xx<n and 0<=yy<n and not visited[xx][yy] and array[x][y] > h:
+                visited[xx][yy] = True
+                queue.append((xx,yy))
+    
+
+for h in range(max_height+1):
+    visited = [[False]*n for _ in range(n)]
+    cnt = 0
+    for i in range(n):
+        for j in range(n):
+            if array[i][j] > h and not visited[i][j]:
+                bfs(i,j,h,visited)
+                cnt+=1
+    answer = max(answer,cnt)
+    
+print(answer)
+
+
+# 2. dfs 풀이
+import sys
+sys.setrecursionlimit(10000)
+
+n = int(input())
+array = [list(map(int,input().split())) for _ in range(n)]
+
+dx = [1, -1, 0, 0]
+dy = [0, 0, 1, -1]
+
+max_height = max(map(max,array))
+answer = 0
+
+def dfs(x,y,h,visited):
+    visited[x][y] = True
+    for i in range(4):
+        xx,yy = x+dx[i], y+dy[i]
+        if 0<=xx<n and 0<=yy<n and not visited[xx][yy] and array[xx][yy] >h:
+            dfs(xx,yy,h,visited)
+    
+
+for h in range(max_height+1):
+    visited = [[False]*n for _ in range(n)]
+    cnt = 0
+    for i in range(n):
+        for j in range(n):
+            if array[i][j] > h and not visited[i][j]:
+                dfs(i,j,h,visited)
+                cnt +=1
+                
+    answer = max(answer,cnt)
+
+print(answer)
+
+#입력
+# 5
+# 6 8 2 6 2
+# 3 2 3 4 6
+# 6 7 3 3 2
+# 7 2 5 3 6
+# 8 9 5 2 7
+
+#출력
+# 5

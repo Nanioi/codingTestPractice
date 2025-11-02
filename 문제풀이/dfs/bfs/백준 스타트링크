@@ -1,0 +1,25 @@
+from collections import deque
+
+F, S, G, U, D = map(int, input().split())
+
+def bfs():
+    visited = [False] * (F + 1)  # 1층부터 F층까지
+    queue = deque([(S, 0)])      # (현재층, 이동횟수)
+    visited[S] = True
+
+    while queue:
+        floor, cnt = queue.popleft()
+
+        # 목표층 도착
+        if floor == G:
+            return cnt
+
+        # 이동 가능한 두 방향
+        for next_floor in (floor + U, floor - D):
+            if 1 <= next_floor <= F and not visited[next_floor]:
+                visited[next_floor] = True
+                queue.append((next_floor, cnt + 1))
+
+    return "use the stairs"
+
+print(bfs())

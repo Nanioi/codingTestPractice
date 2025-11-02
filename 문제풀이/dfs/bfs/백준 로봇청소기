@@ -1,0 +1,57 @@
+from collections import deque
+
+# 북, 동, 남, 서
+dx,dy = [-1,0,1,0],[0,1,0,-1]
+
+n,m = map(int, input().split())
+r,c,d = map(int, input().split())
+graph = [list(map(int,input().split())) for _ in range(n)]
+
+
+# 청소한 칸 수
+cnt = 0
+
+while True:
+    # 1. 현재 위치 청소
+    if graph[r][c] == 0:
+        graph[r][c] = 2 #청소됨
+        cnt +=1
+        
+    cleaned = False
+    for _ in range(4):
+        d = (d+3)%4 # 시간 반대방향 90% 회전
+        xx,yy = r+dx[d], c+dy[d]
+        if 0<=xx<n and 0<=yy<m and graph[xx][yy] == 0:
+            # 청소되지 않은 칸 있으면 전진
+            r,c = xx,yy
+            cleaned = True
+            break
+    
+    # 3. 네 방향 모두 청소되어 있거나 벽인 경우
+    if not cleaned:
+        # 뒤로 한 칸 이동 (방향 유지)
+        back = (d+2)%4
+        r,c = r+dx[back], c+dy[back]
+        if graph[r][c] == 1:
+            break
+        
+print(cnt)        
+
+
+#입력
+# 11 10
+; 7 4 0
+; 1 1 1 1 1 1 1 1 1 1
+; 1 0 0 0 0 0 0 0 0 1
+; 1 0 0 0 1 1 1 1 0 1
+; 1 0 0 1 1 0 0 0 0 1
+; 1 0 1 1 0 0 0 0 0 1
+; 1 0 0 0 0 0 0 0 0 1
+; 1 0 0 0 0 0 0 1 0 1
+; 1 0 0 0 0 0 1 1 0 1
+; 1 0 0 0 0 0 1 1 0 1
+; 1 0 0 0 0 0 0 0 0 1
+; 1 1 1 1 1 1 1 1 1 1
+
+#출력
+# 57

@@ -1,0 +1,49 @@
+from collections import deque
+
+def bfs(start, stores, end):
+    queue = deque([start])
+    visited = [False] * len(stores)
+    
+    while queue:
+        x,y = queue.popleft()
+        
+        #페스티벌 도착가능 
+        if abs(x-end[0]) + abs(y-end[1]) <= 1000:
+            return True    
+        
+        #편의점 방문
+        for i in range(len(stores)):
+            if not visited[i]:
+                sx,sy = stores[i]
+                if abs(x-sx) + abs(y-sy) <= 1000:
+                    visited[i] = True
+                    queue.append((sx,sy))
+    return False
+
+
+TC = int(input())
+for _ in range(TC):
+    n = int(input())
+    start = tuple(map(int, input().split()))
+    stores = [tuple(map(int, input().split())) for _ in range(n)]
+    end = tuple(map(int, input().split()))
+    
+    print("happy" if bfs(start, stores, end) else "sad")
+    
+    
+#입력
+# 2
+# 2
+# 0 0
+# 1000 0
+# 1000 1000
+# 2000 1000
+# 2
+# 0 0
+# 1000 0
+# 2000 1000
+# 2000 2000
+
+#출력
+# happy
+# sad

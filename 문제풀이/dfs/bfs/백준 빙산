@@ -1,0 +1,90 @@
+from collections import deque
+
+n,m = map(int, input().split())
+graph = [list(map(int,input().split())) for _ in range(n)]
+
+dx = [1, -1, 0, 0]
+dy = [0, 0, 1, -1]
+
+
+
+# 녹이기 
+def melt():
+    melt_amount = [[0]*m for _ in range(n)]
+    changed = False
+    
+    for i in range(n):
+        for j in range(m):
+            if graph[i][j] > 0 :
+                for k in range(4):
+                    x,y = i+dx[k], j+dy[k]
+                    if 0<=x<n and 0<=y<m and graph[x][y] == 0:
+                        melt_amount[i][j] +=1
+                        
+
+    for i in range(n):
+        for j in range(m):
+            if graph[i][j] > 0:
+                new_val = max(0, graph[i][j]-melt_amount[i][j])
+                if new_val != graph[i][j]:
+                    changed = True
+                graph[i][j] = new_val
+                
+    return changed
+        
+                     
+
+
+# 덩어리 갯수 구하기 
+def bfs(x,y,visited):
+    queue = deque([(x,y)])
+    visited[x][y] = True
+    
+    while queue:
+        x,y = queue.popleft()
+        
+        for i in range(4):
+            xx,yy = x+dx[i], y+dy[i]
+            if 0<=xx<n and 0<=yy<m and graph[xx][yy]>0 and not visited[xx][yy]:
+                visited[xx][yy] = True
+                queue.append((xx,yy))    
+
+
+def count_icebergs():
+    visited = [[False]*m for _ in range(n)]
+    cnt = 0
+    for i in range(n):
+        for j in range(m):
+            if graph[i][j] > 0 and not visited[i][j]:
+                bfs(i,j,visited)
+                cnt +=1
+    return cnt
+
+year = 0
+while True:
+    cnt = count_icebergs()
+    if cnt >=2:
+        print(year)
+        break
+    if cnt == 0:
+        print(0)
+        break
+    changed = melt()
+    year += 1
+    if not changed:
+        print(0)
+        break
+    
+    
+    
+    
+#입력
+# 5 7
+# 0 0 0 0 0 0 0
+# 0 2 4 5 3 0 0
+# 0 3 0 2 5 2 0
+# 0 7 6 2 4 0 0
+# 0 0 0 0 0 0 0
+
+#출력
+# 2
