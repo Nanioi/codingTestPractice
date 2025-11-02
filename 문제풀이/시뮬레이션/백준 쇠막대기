@@ -1,0 +1,22 @@
+stack = []
+answer = 0
+
+array = input().strip()
+
+for i, char in enumerate(array):
+    if char == '(':
+        stack.append('(')
+    else:
+        stack.pop()
+        if array[i-1] == '(':
+            answer += len(stack)
+        else:
+            answer +=1
+            
+print(answer)
+
+#입력
+#(((()(()()))(())()))(()())
+
+#출력
+#24

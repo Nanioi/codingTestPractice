@@ -1,0 +1,137 @@
+#문제풀이1
+import sys
+input = sys.stdin.readline
+
+# ---- 1) 기본 5개 모양 (문제에서 네가 지정한 모양) ----
+# 좌표는 (행, 열) = (x, y)로 가정
+seed_shapes = [
+    [(0,0),(0,1),(0,2),(0,3)],            # I (가로)
+    [(0,0),(0,1),(1,0),(1,1)],            # O
+    [(0,0),(0,1),(0,2),(1,2)],            # L (오른쪽으로 꺾임)
+    [(0,0),(0,1),(1,1),(1,2)],            # Z/S류 (가로 2줄 계단형)
+    [(0,0),(0,1),(0,2),(1,1)],            # T
+]
+
+def rotate90(shape):
+    """원점 기준 시계방향 90도 회전: (x, y) -> (y, -x)"""
+    return [(y, -x) for x, y in shape]
+
+def normalize(shape):
+    """좌표들을 (최소 x, 최소 y)이 (0,0)이 되도록 평행이동"""
+    minx = min(x for x, y in shape)
+    miny = min(y for x, y in shape)
+    return [(x - minx, y - miny) for x, y in shape]
+
+def all_rotations(shape):
+    """0/90/180/270도 회전(대칭 없음) 생성 + 정규화 + 중복 제거"""
+    forms = set()
+    cur = shape
+    for _ in range(4):
+        norm = tuple(sorted(normalize(cur)))
+        forms.add(norm)
+        cur = rotate90(cur)
+    # 리스트로 돌려주기
+    return [list(form) for form in forms]
+
+# ---- 2) 회전만으로 만들어지는 모든 블록 모양 수집(중복 제거) ----
+block_set = set()
+blocks = []
+for s in seed_shapes:
+    for form in all_rotations(s):
+        key = tuple(sorted(form))
+        if key not in block_set:
+            block_set.add(key)
+            blocks.append(form)
+
+# print(len(blocks))  # 필요하면 모양 개수 확인
+
+# ---- 3) 입력 처리 & 완전탐색 ----
+case = 1
+while True:
+    N = int(input().strip())
+    if N == 0:
+        break
+    board = [list(map(int, input().split())) for _ in range(N)]
+
+    best = 0
+    for i in range(N):
+        for j in range(N):
+            for shape in blocks:
+                total = 0
+                ok = True
+                for dx, dy in shape:
+                    x, y = i + dx, j + dy
+                    if 0 <= x < N and 0 <= y < N:
+                        total += board[x][y]
+                    else:
+                        ok = False
+                        break
+                if ok and total > best:
+                    best = total
+
+    print(f"{case}. {best}")
+    case += 1
+
+
+
+#문제풀이 2
+import sys
+input = sys.stdin.readline
+
+# 13가지 회전 형태 미리 정의
+blocks = [
+    [(0,0),(0,1),(0,2),(0,3)],            # I (가로)
+    [(0,0),(1,0),(2,0),(3,0)],
+    [(0,0),(0,1),(1,0),(1,1)],            # O
+    [(0,0),(0,1),(0,2),(1,2)],            #  L (오른쪽으로 꺾임)
+    [(0,0),(0,1),(1,0),(2,0)],
+    [(0,0),(1,0),(1,1),(1,2)],
+    [(0,0),(0,1),(-1,1),(-2,1)],   
+    [(0,0),(0,1),(1,1),(1,2)],            # Z/S류 (가로 2줄 계단형)
+    [(0,0),(1,0),(0,1),(-1,1)],
+    [(0,0),(0,1),(0,2),(1,1)],            # T
+    [(0,0),(0,1),(-1,1),(1,1)],
+    [(0,0),(0,1),(0,2),(-1,1)],
+    [(0,0),(1,0),(2,0),(1,1)]
+]
+
+case = 1
+while True:
+    N = int(input())
+    
+    if N == 0:
+        break
+
+    board = [list(map(int, input().split())) for _ in range(N)]
+    
+    best = float('-inf')
+    for i in range(N):
+        for j in range(N):
+            for shape in blocks:
+                total = 0
+                ok = True
+                for dx,dy in shape:
+                    x,y = i+dx, j+dy
+                    if 0<=x<N and 0<=y<N:
+                        total += board[x][y]
+                    else:
+                        ok = False
+                        break
+                if ok and total > best:
+                    best = total
+                    
+    print(f"{case}. {best}")
+    case += 1
+    
+
+
+#입력
+; 4 
+; 70  2  1 7
+;  7  1 30 6 
+;  4 30 30 5 
+;  3  1 30 2 
+; 0
+
+; 출력
+; 1. 120

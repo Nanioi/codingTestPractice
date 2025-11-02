@@ -1,0 +1,69 @@
+from collections import deque
+
+N = int(input())
+K = int(input())
+
+board = [[0]*(N+2) for _ in range(N+2)]
+
+for _ in range(K):
+    x,y = map(int,input().split())
+    board[x][y] = 1
+    
+L = int(input())
+turns = {}
+for _ in range(L):
+    t, c = input().split()
+    turns[int(t)] = c
+
+# 방향: 오른쪽, 아래, 왼쪽, 위 (시계방향)
+dx,dy = [0,1,0,-1],[1,0,-1,0]
+
+curD = 0
+time = 0
+snake = deque([(1,1)]) # 뱀의 몸 (머리→꼬리)
+board[1][1] = 2  # 뱀 위치 표시
+
+
+while True:
+    time +=1 
+    head_x, head_y = snake[-1]
+    nx = head_x + dx[curD]
+    ny = head_y + dy[curD]
+    
+    # 벽이나 자기 몸에 부딪히면 게임 종료
+    if nx in (0,N+1) or ny in (0,N+1) or board[nx][ny] == 2:
+        break
+    
+    # 사과가 없는 칸이면 꼬리 제거
+    if board[nx][ny] == 0:
+        tail_x,tail_y = snake.popleft()
+        board[tail_x][tail_y] = 0
+    
+    # 머리 이동
+    board[nx][ny] = 2
+    snake.append((nx,ny))
+    
+    #방향 전환
+    if time in turns:
+        if turns[time] == 'D':
+            curD = (curD + 1)%4
+        else:
+            curD = (curD - 1)%4
+    
+    
+print(time)
+        
+
+#입력
+; 6
+; 3
+; 3 4
+; 2 5
+; 5 3
+; 3
+; 3 D
+; 15 L
+; 17 D
+
+#출력
+# 9

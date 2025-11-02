@@ -1,0 +1,57 @@
+#풀이1
+import heapq
+
+X = int(input()) 
+arr = [64]
+heapq.heapify(arr)
+
+def slice_arr():
+    # 가장 짧은거 절반으로 자르기 
+    mini = heapq.heappop(arr)
+    half_mini = mini // 2
+    
+    # 절반 중 하나 뺀 나머지 합 > X => 절반 중 하나 버리기
+    if (sum(arr) + half_mini) < X:
+        heapq.heappush(arr, half_mini)
+        
+    heapq.heappush(arr, half_mini)
+
+
+
+while True:
+    if sum(arr) == X:
+        print(len(arr))
+        break
+    if sum(arr) > X:
+        slice_arr()
+
+#풀이2
+import heapq
+
+X = int(input())
+arr = [64]
+heapq.heapify(arr)
+
+while sum(arr) > X:
+    mini = heapq.heappop(arr)
+    half = mini // 2
+    
+    # 절반 중 하나만 추가해서 조건 확인
+    if sum(arr) + half >= X:
+        heapq.heappush(arr, half)
+    else:
+        heapq.heappush(arr, half)
+        heapq.heappush(arr, half)
+
+print(len(arr))
+
+#풀이3
+X = int(input())
+print(bin(X).count('1'))
+
+
+#입력
+#23
+
+#출력
+#4
