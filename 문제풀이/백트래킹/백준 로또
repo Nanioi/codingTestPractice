@@ -1,0 +1,42 @@
+# 백트래킹 풀이 
+import sys
+input = sys.stdin.readline 
+
+
+def dfs(start, depth): # start: 다음에 탐색할 시작 인덱스, depth: 현재까지 고른 숫자 개수
+    if depth == 6:
+        print(*result) # print(*objects, sep=' ', end='\n')
+        return 
+    
+    for i in range(start, k):   # 현재 start부터 탐색
+        result.append(array[i])   # 하나 고름
+        dfs(i + 1, depth + 1)   # 다음 인덱스부터 재귀
+        result.pop()            # 백트래킹 (이전 상태 복구)
+        
+
+
+while True:
+    input_data = list(map(int,input().split()))
+    k=input_data[0]
+    if k == 0:
+        break
+    
+    array = input_data[1:]
+    result = []
+    dfs(0,0)
+    print()
+
+
+#combinations 라이브러리 풀이
+from itertools import combinations
+
+while True:
+    input_data = list(map(int,input().split()))
+    k=input_data[0]
+    if k == 0:
+        break
+    
+    array = input_data[1:]
+    for comb in combinations(array,6):
+        print(*comb)
+    print()

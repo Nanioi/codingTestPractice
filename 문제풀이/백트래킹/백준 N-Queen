@@ -1,0 +1,29 @@
+import sys
+input = sys.stdin.readline
+
+# x번째 행에 놓은 queen에 대해 검증
+def check(x):
+    #이전 행의 queen들 확인
+    for i in range(x):
+        if row[x]==row[i]: #위
+            return False
+        if abs(row[x]-row[i])==x-i: #대각선
+            return False
+    return True
+    
+    
+def dfs(x):   
+    if x == N:
+        return 1  # 한 가지 경우 완성
+    cnt = 0
+    for i in range(N):
+        row[x] = i
+        if check(x):
+            cnt += dfs(x + 1)
+    return cnt
+
+        
+N = int(input())
+row = [0] * N # row[i] = j, i행에 j열에 퀸  
+result = dfs(0)
+print(result)

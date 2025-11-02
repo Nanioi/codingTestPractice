@@ -1,0 +1,58 @@
+import sys
+input = sys.stdin.readline
+
+N = int(input())
+S = [list(map(int, input().split())) for _ in range(N)]
+min_diff = float('inf')
+visited = [False] * N # True면 스타트 팀에 포함
+
+
+# array = []
+
+# for i in range(n):
+#     row = list(map(int, input().split()))
+#     array.append(row)
+    
+
+def dfs(idx, cnt):
+    global min_diff
+    
+    if cnt == N//2:
+        start = []
+        link = []
+        
+        for i in range(N):
+            if visited[i]:
+                start.append(i)
+            else:
+                link.append(i)
+                
+        start_score = 0
+        link_score = 0  
+        
+        for i in range(N//2):
+            for j in range(i+1, N//2):
+                start_score += S[start[i]][start[j]] + S[start[j]][start[i]]
+                link_score += S[link[i]][link[j]] + S[link[j]][link[i]]
+        
+        min_diff = min(min_diff, abs(start_score - link_score))        
+        return 
+
+    for i in range(idx, N):
+        if not visited[i]:
+            visited[i] = True
+            dfs(i+1, cnt+1)
+            visited[i] = False
+            
+dfs(0, 0)
+print(min_diff)
+
+
+#입력
+# 6
+# 0 1 2 3 4 5
+# 1 0 2 3 4 5
+# 1 2 0 3 4 5
+# 1 2 3 0 4 5
+# 1 2 3 4 0 5
+# 1 2 3 4 5 0
